@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Александр](https://up.htmlacademy.ru/javascript/18/user/1054543).
-* Наставник: `Неизвестно`.
+* Наставник: `Елена Грицук`.
 
 ---
 
