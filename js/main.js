@@ -2,7 +2,6 @@
 
 var NOTICES_QUANTITY = 8;
 var notices = [];
-var avatars = [];
 var offerType = ['palace', 'flat', 'house', 'bungalo'];
 var times = ['12:00', '13:00', '14:00'];
 var features = ['wifi', 'dishwasher', 'parking',
@@ -34,7 +33,7 @@ function getRandomArray(arr) {
   }
   var randomArrayLength = (random(arr) !== 0) ? random(arr) : 1;
   // generation of random array:
-  for (var i = 0; i < randomArrayLength; i++) {
+  for (i = 0; i < randomArrayLength; i++) {
     var randomIndex = random(copyArray);
     randomArray[i] = copyArray[randomIndex];
     copyArray.splice(randomIndex, 1);
@@ -61,7 +60,7 @@ function generateNotices(arr) {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
       offer: {
-        title: 'Заголовок',
+        title: 'Заголовок объявления',
         address: getRandomNumber(1000) + ',' + getRandomNumber(10000),
         price: getRandomNumber(10000),
         type: offerType[random(offerType)],
@@ -83,11 +82,15 @@ function generateNotices(arr) {
 
 function getNewElements(numberOfCopy, template, arr, destination) {
   var fragment = document.createDocumentFragment();
+  var pinWidth = 50;
+  var pinHeight = 70;
   for (var i = 0; i < numberOfCopy; i++) {
     var newElement = template.cloneNode(true);
     fragment.appendChild(newElement);
-    newElement.querySelector('.map__pin').style.left = arr[i].location.x;
-    newElement.querySelector('.map__pin').style.top = arr[i].location.y;
+    newElement.style.left = arr[i].location.x - pinWidth / 2 + 'px';
+    newElement.style.top = arr[i].location.y - pinHeight + 'px';
+    newElement.querySelector('img').src = arr[i].author.avatar;
+    newElement.querySelector('img').alt = arr[i].offer.title;
   }
   destination.appendChild(fragment);
 }
