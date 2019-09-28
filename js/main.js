@@ -14,10 +14,6 @@ var pinTemplate = document.querySelector('#pin')
   .content.querySelector('.map__pin');
 var bookingMap = document.querySelector('.map');
 
-function random(arr) {
-  return Math.floor(Math.random() * arr.length);
-}
-
 function getRandomNumber(number) {
   return Math.floor(Math.random() * number);
 }
@@ -35,7 +31,7 @@ function getRandomArray(arr) {
   var randomArrayLength = getRandomIntegerFromDiapason(1, arr.length);
   // generation of random array:
   for (i = 0; i < randomArrayLength; i++) {
-    var randomIndex = random(copyArray);
+    var randomIndex = getRandomNumber(copyArray);
     randomArray[i] = copyArray[randomIndex];
     copyArray.splice(randomIndex, 1);
   }
