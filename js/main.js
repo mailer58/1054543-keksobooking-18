@@ -31,7 +31,7 @@ function getRandomArray(arr) {
   var randomArrayLength = getRandomIntegerFromDiapason(1, arr.length);
   // generation of random array:
   for (i = 0; i < randomArrayLength; i++) {
-    var randomIndex = getRandomNumber(copyArray);
+    var randomIndex = getRandomNumber(copyArray.length);
     randomArray[i] = copyArray[randomIndex];
     copyArray.splice(randomIndex, 1);
   }
