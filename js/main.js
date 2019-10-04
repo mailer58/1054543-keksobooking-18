@@ -180,21 +180,13 @@ function checkGuestRoomCorrespondence (evt) {
 for (var i=0, lastOption = 1, j = capacityCollection.length-2;
    i<roomNumberCollection.length; i++, j--) {
 
-  if (i<roomNumberCollection.length-lastOption && roomNumberCollection[i].selected && capacityCollection[j].selected) {
-console.log('ок');
-  }
-  else if (i<roomNumberCollection.length-lastOption && roomNumberCollection[i].selected && !capacityCollection[j].selected) {
+
+   if (i<roomNumberCollection.length-lastOption && roomNumberCollection[i].selected && !capacityCollection[j].selected) {
 console.log('error');
   }
   else if (i===roomNumberCollection.length - 1 && roomNumberCollection[i].selected && !capacityCollection[i].selected){
     console.log('error');
     roomNumber.setCustomValidity('Количество комнат и гостей должно совпадать');
-  }
-  else if (i===roomNumberCollection.length-lastOption) {
-    j = i;
-    if (roomNumberCollection[i].selected && capacityCollection[j].selected){
-      console.log('гуд');
-    }
   }
 }
 }
