@@ -6,7 +6,6 @@ var PIN_HEIGHT = 70;
 var PIN_INIT_WIDTH = 156;
 var PIN_INIT_HEIGHT = 156;
 var ENTER_KEYCODE = 13;
-var SVG_ELEMENTS_TO_REMOVE = 2;
 
 var offerType = ['palace', 'flat', 'house', 'bungalo'];
 var times = ['12:00', '13:00', '14:00'];
@@ -17,7 +16,6 @@ var features = ['wifi', 'dishwasher', 'parking',
 var pinDestination = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content.querySelector('.map__pin');
-var bookingMap = document.querySelector('.map');
 var cardDestination = document.body;
 var cardTemplate = document.querySelector('#card')
   .content.querySelector('.map__card');
@@ -26,13 +24,11 @@ var mapFilters = document.querySelector('.map__filters');
 var pinMain = document.querySelector('.map__pin');
 var pinMainSvg = pinMain.getElementsByTagName('svg')[0];
 var cardsCollection = document.getElementsByClassName('map__card');
-var currentPin = '';
 var currentCard = '';
 var pinsCollection = document.getElementsByClassName('map__pin');
 var roomNumber = adForm.querySelector('#room_number');
 var roomNumberCollection = adForm.querySelector('#room_number').querySelectorAll('option');
 var capacityCollection = adForm.querySelector('#capacity').querySelectorAll('option');
-var submitButton = adForm.querySelector('.ad-form__submit');
 
 function getRandomNumber(number) {
   return Math.floor(Math.random() * number);
@@ -70,6 +66,7 @@ function getLinksArray(min, max, linkBegining, imgExtension) {
 
 function onCloseButtonClick() {
   event.target.closest('.popup').style.display = 'none';
+  currentCard = '';
 }
 
 function generateNotices(noticesQuantity) {
@@ -102,19 +99,17 @@ function generateNotices(noticesQuantity) {
 }
 
 function onPinClick(i) {
-  return function() {
+  return function () {
     // there is no open card
     if (currentCard === '') {
       currentCard = cardsCollection[i];
       cardsCollection[i].style.display = 'block';
-    }
-    // there is open card
-    else if (currentCard != cardsCollection[i]) {
+    } /* there is open card*/ else if (currentCard !== cardsCollection[i]) {
       currentCard.style.display = 'none';
       cardsCollection[i].style.display = 'block';
       currentCard = cardsCollection[i];
     }
-  }
+  };
 }
 
 function getNewElements(numberOfCopy, template, arr, destination, newElementName) {
@@ -130,10 +125,7 @@ function getNewElements(numberOfCopy, template, arr, destination, newElementName
       newElement.querySelector('img').src = arr[i].author.avatar;
       newElement.querySelector('img').alt = arr[i].offer.title;
       newElement.addEventListener('click', onPinClick(i));
-
-    }
-    // generate cards
-    else if (newElementName === 'cards') {
+    } /* generate cards */ else if (newElementName === 'cards') {
       newElement.style.display = 'none';
       newElement.classList.add('popup' + i);
       newElement.querySelector('.popup__avatar').src = arr[i].author.avatar;
@@ -170,25 +162,32 @@ function switchForm(formName, tagName, boolean) {
       formName.getElementsByTagName(tagName)[i].disabled = true;
     }
   } else {
-    for (var i = 0; i < formName.getElementsByTagName(tagName).length; i++) {
+    for (i = 0; i < formName.getElementsByTagName(tagName).length; i++) {
       formName.getElementsByTagName(tagName)[i].disabled = false;
     }
   }
 }
 
-function checkGuestRoomCorrespondence (evt) {
-for (var i=0, lastOption = 1, j = capacityCollection.length-2;
-   i<roomNumberCollection.length; i++, j--) {
-
-
-   if (i<roomNumberCollection.length-lastOption && roomNumberCollection[i].selected && !capacityCollection[j].selected) {
-console.log('error');
+function checkGuestRoomCorrespondence(evt) {
+  for (var i = 0, lastOption = 1, j = capacityCollection.length - 2; i < roomNumberCollection.length; i++, j--) {
+    if (i < roomNumberCollection.length - lastOption && roomNumberCollection[i].selected && capacityCollection[j].selected) {
+      // console.log('ок' + i);
+      roomNumber.setCustomValidity('');
+    } else if (i < roomNumberCollection.length - lastOption && roomNumberCollection[i].selected && !capacityCollection[j].selected) {
+      // console.log('error' + i);
+      evt.preventDefault();
+      roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
+    } else if (i === roomNumberCollection.length - 1 && roomNumberCollection[i].selected && !capacityCollection[i].selected) {
+      // console.log('error' + i);
+      evt.preventDefault();
+      roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
+    } else if (i === roomNumberCollection.length - lastOption && roomNumberCollection[i].selected && capacityCollection[i].selected) {
+      // console.log('ok' + i);
+      roomNumber.setCustomValidity('');
+    } else {
+      // roomNumber.setCustomValidity('');
+    }
   }
-  else if (i===roomNumberCollection.length - 1 && roomNumberCollection[i].selected && !capacityCollection[i].selected){
-    console.log('error');
-    roomNumber.setCustomValidity('Количество комнат и гостей должно совпадать');
-  }
-}
 }
 
 function pageActivation() {
@@ -200,8 +199,9 @@ function pageActivation() {
   switchForm(mapFilters, 'select', false);
   getNewElements(NOTICES_QUANTITY, cardTemplate, notices, cardDestination, 'cards');
   getNewElements(NOTICES_QUANTITY, pinTemplate, notices, pinDestination, 'pins');
-  setAddress (pinMain.style.left, PIN_WIDTH/2, pinMain.style.top, PIN_HEIGHT);
-  roomNumber.addEventListener('change', checkGuestRoomCorrespondence);
+  setAddress(pinMain.style.left, PIN_WIDTH / 2, pinMain.style.top, PIN_HEIGHT);
+  // roomNumber.addEventListener('change', checkGuestRoomCorrespondence);
+  adForm.addEventListener('submit', checkGuestRoomCorrespondence);
   return pinMain.removeChild(pinMainSvg);
 }
 
@@ -218,7 +218,7 @@ function pageDeactivation() {
   // remove eventListeners for pins (don't work!):
   for (var i = 1; i < pinsCollection.length; i++) {
     pinsCollection[i].removeEventListener('click', onPinClick(i));
-    console.log(pinsCollection[i]);
+    // console.log(pinsCollection[i]);
   }
 
   // remove Html collection of pins:
@@ -228,7 +228,7 @@ function pageDeactivation() {
   }
 
   // remove eventListeners for button 'Close'
-  for (var i = 0; i < cardsCollection.length; i++) {
+  for (i = 0; i < cardsCollection.length; i++) {
     cardsCollection[i].querySelector('.popup__close').removeEventListener('click', onCloseButtonClick);
   }
 
@@ -236,38 +236,36 @@ function pageDeactivation() {
   while (cardsCollection.length) {
     cardsCollection[0].parentNode.removeChild(cardsCollection[0]);
   }
-// set Address for initial pin
-  setAddress (pinMain.style.left, PIN_INIT_WIDTH/2, pinMain.style.top, PIN_INIT_HEIGHT/2);
+  // set Address for initial pin
+  setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
 }
 
-function setAddress (left, width, top, height) {
+function setAddress(left, width, top, height) {
   var leftPosition = Math.floor(parseInt(left, 10) + width);
   var topPosition = Math.floor(parseInt(top, 10) + height);
   var addressForm = leftPosition + ', ' + topPosition;
   document.querySelector('#address').value = addressForm;
 }
 
-
-
 // set Address for initial pin
-setAddress (pinMain.style.left, PIN_INIT_WIDTH/2, pinMain.style.top, PIN_INIT_HEIGHT/2);
+setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
 
 pageDeactivation();
 var notices = generateNotices(NOTICES_QUANTITY);
-pageActivation();
+// pageActivation();
 
 // enable form:
-pinMain.addEventListener('mousedown', function() {
-  var initPinMain = pageActivation();
+pinMain.addEventListener('mousedown', function () {
+  pageActivation();
 });
 
-pinMain.addEventListener('keydown', function(evt) {
+pinMain.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    initPinMain = pageActivation();
+    pageActivation();
   }
 });
 
-document.addEventListener('keydown', function(evt) {
+document.addEventListener('keydown', function (evt) {
   if (evt.keyCode === 27) {
     pageDeactivation();
   }
