@@ -13,6 +13,13 @@ var features = ['wifi', 'dishwasher', 'parking',
   'washer', 'elevator', 'conditioner'
 ];
 
+var guestsRoomsMap = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0]
+};
+
 var pinDestination = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content.querySelector('.map__pin');
@@ -26,8 +33,7 @@ var pinMainSvg = pinMain.getElementsByTagName('svg')[0];
 var cardsCollection = document.getElementsByClassName('map__card');
 var pinsCollection = document.getElementsByClassName('map__pin');
 var roomNumber = adForm.querySelector('#room_number');
-var roomNumberCollection = adForm.querySelector('#room_number').querySelectorAll('option');
-var capacityCollection = adForm.querySelector('#capacity').querySelectorAll('option');
+var guestNumber = adForm.querySelector('#capacity');
 
 function getRandomNumber(number) {
   return Math.floor(Math.random() * number);
@@ -98,21 +104,14 @@ function generateNotices(noticesQuantity) {
 
 function onPinClick(i) {
   return function () {
-    var openCardNumber;
-    // check if there is an open card
-    for (var j = 0; j < cardsCollection.length; j++) {
-      if (cardsCollection[j].className === 'map__card popup open') {
-        openCardNumber = j;
-        break;
-      }
-    }
+    var openCard = document.querySelector('.open');
     // there is no open card:
-    if (openCardNumber === undefined) {
+    if (!openCard) {
       cardsCollection[i].style.display = 'block';
       cardsCollection[i].classList.add('open');
     } /* there is open card:*/ else {
-      cardsCollection[openCardNumber].style.display = 'none';
-      cardsCollection[openCardNumber].classList.remove('open');
+      openCard.style.display = 'none';
+      openCard.classList.remove('open');
       cardsCollection[i].style.display = 'block';
       cardsCollection[i].classList.add('open');
     }
@@ -193,33 +192,14 @@ function switchForm(formName, className, statement) {
 
 }
 
-function checkGuestRoomCorrespondence() {
-  for (var i = 0, lastOption = 1, j = capacityCollection.length - 2; i < roomNumberCollection.length; i++, j--) {
-    if (i < roomNumberCollection.length - lastOption && roomNumberCollection[i].selected && !capacityCollection[j].selected) {
-      // console.log('error' + i);
+function checkGuestRoomCorrespondence(evt) {
+  var roomsNumber = Number(adForm.querySelector('#room_number').value);
+  var guestsNumber = Number(adForm.querySelector('#capacity').value);
 
-      roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
-    } else if (i < roomNumberCollection.length - lastOption && !roomNumberCollection[i].selected && capacityCollection[j].selected) {
-      // console.log('error' + i);
-
-      roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
-    } else if (i === roomNumberCollection.length - 1 && roomNumberCollection[i].selected && !capacityCollection[i].selected) {
-      // console.log('error' + i);
-
-      roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
-    } else if (i === roomNumberCollection.length - 1 && !roomNumberCollection[i].selected && capacityCollection[i].selected) {
-      // console.log('error' + i);
-
-      roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
-    } else if (i < roomNumberCollection.length - lastOption && roomNumberCollection[i].selected && capacityCollection[j].selected) {
-      // console.log('ок' + i);
-      roomNumber.setCustomValidity('');
-    } else if (i === roomNumberCollection.length - lastOption && roomNumberCollection[i].selected && capacityCollection[i].selected) {
-      // console.log('ok' + i);
-      roomNumber.setCustomValidity('');
-    } else {
-      roomNumber.setCustomValidity('');
-    }
+  if (guestsRoomsMap[roomsNumber].indexOf(guestsNumber) === -1) {
+    evt.target.setCustomValidity('Число гостей и комнта должно совпадать');
+  } else {
+    evt.target.setCustomValidity('');
   }
 }
 
@@ -232,6 +212,7 @@ function activatePage() {
   getNewElements(NOTICES_QUANTITY, pinTemplate, pinDestination, 'pins');
   setAddress(pinMain.style.left, PIN_WIDTH / 2, pinMain.style.top, PIN_HEIGHT);
   roomNumber.addEventListener('change', checkGuestRoomCorrespondence);
+  guestNumber.addEventListener('change', checkGuestRoomCorrespondence);
   return pinMain.removeChild(pinMainSvg);
 }
 
