@@ -211,11 +211,11 @@ function deactivatePage() {
   switchForm(adFormElements, true);
   switchForm(mapFiltersElements, true);
 
-  // remove eventListeners for pins (don't work!):
+  /*// remove eventListeners for pins (don't work!):
   for (var i = 1; i < pinsCollection.length; i++) {
     pinsCollection[i].removeEventListener('click', onPinClick);
     // console.log(pinsCollection[i]);
-  }
+  }*/
 
   // remove Html collection of pins:
   // avoiding removing main-pin from map:
