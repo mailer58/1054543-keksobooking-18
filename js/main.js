@@ -224,7 +224,7 @@ function deactivatePage() {
   }
 
   // remove eventListeners for button 'Close'
-  for (i = 0; i < cardsCollection.length; i++) {
+  for (var i = 0; i < cardsCollection.length; i++) {
     cardsCollection[i].querySelector('.popup__close').removeEventListener('click', onCloseButtonClick);
   }
 
