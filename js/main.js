@@ -27,13 +27,13 @@ var cardDestination = document.body;
 var cardTemplate = document.querySelector('#card')
   .content.querySelector('.map__card');
 var adForm = document.querySelector('.ad-form');
-var mapFilters = document.querySelector('.map__filters');
 var pinMain = document.querySelector('.map__pin');
-var pinMainSvg = pinMain.getElementsByTagName('svg')[0];
 var cardsCollection = document.getElementsByClassName('map__card');
 var pinsCollection = document.getElementsByClassName('map__pin');
 var roomNumber = adForm.querySelector('#room_number');
 var guestNumber = adForm.querySelector('#capacity');
+var adFormElements = document.querySelectorAll('.ad-form input, .ad-form select');
+var mapFiltersElements = document.querySelectorAll('.map__filters input, .map__filters select');
 
 function getRandomNumber(number) {
   return Math.floor(Math.random() * number);
@@ -176,20 +176,10 @@ function getNewElements(numberOfCopy, template, destination, newElementName) {
 }
 
 // activation/deactivation of form
-function switchForm(formName, className, statement) {
-  switch (statement) {
-    case true:
-      for (var i = 0; i < formName.querySelectorAll(className).length; i++) {
-        formName.querySelectorAll(className)[i].disabled = true;
-      }
-      break;
-    case false:
-      for (i = 0; i < formName.querySelectorAll(className).length; i++) {
-        formName.querySelectorAll(className)[i].disabled = false;
-      }
-      break;
+function switchForm(collection, isDisabled) {
+  for (var i = 0; i < collection.length; i++) {
+    collection[i].disabled = isDisabled;
   }
-
 }
 
 function checkGuestRoomCorrespondence(evt) {
@@ -206,24 +196,20 @@ function checkGuestRoomCorrespondence(evt) {
 function activatePage() {
   adForm.classList.remove('ad-form--disabled');
   document.querySelector('.map').classList.remove('map--faded');
-  switchForm(adForm, '.ad-form input, .ad-form select', false);
-  switchForm(mapFilters, '.ad-form input, .ad-form select', false);
+  switchForm(adFormElements, false);
+  switchForm(mapFiltersElements, false);
   getNewElements(NOTICES_QUANTITY, cardTemplate, cardDestination, 'cards');
   getNewElements(NOTICES_QUANTITY, pinTemplate, pinDestination, 'pins');
   setAddress(pinMain.style.left, PIN_WIDTH / 2, pinMain.style.top, PIN_HEIGHT);
   roomNumber.addEventListener('change', checkGuestRoomCorrespondence);
   guestNumber.addEventListener('change', checkGuestRoomCorrespondence);
-  return pinMain.removeChild(pinMainSvg);
 }
 
 function deactivatePage() {
   adForm.classList.add('ad-form--disabled');
   document.querySelector('.map').classList.add('map--faded');
-  switchForm(adForm, '.ad-form input, .ad-form select', true);
-  switchForm(mapFilters, '.ad-form input, .ad-form select', true);
-  // restore pinMain button:
-  pinMain.classList.add('map__pin--main');
-  pinMain.appendChild(pinMainSvg);
+  switchForm(adFormElements, true);
+  switchForm(mapFiltersElements, true);
 
   // remove eventListeners for pins (don't work!):
   for (var i = 1; i < pinsCollection.length; i++) {
