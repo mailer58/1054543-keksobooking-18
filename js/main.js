@@ -271,11 +271,6 @@ function activatePage() {
   // set address input readonly:
   address.readOnly = true;
   // disable pinMain when page is activated
-  if (!mapFaded) {
-    // show the first card:
-    cardsCollection[0].style.display = 'block';
-    cardsCollection[0].classList.add('open');
-  }
 }
 
 function deactivatePage() {
