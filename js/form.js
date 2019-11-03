@@ -180,7 +180,6 @@
   pinMain.addEventListener('mousedown', function (evt) {
     if (document.querySelector('.map--faded')) {
       activatePage(evt);
-    } else {
       window.onPinMove(evt);
     }
   });
