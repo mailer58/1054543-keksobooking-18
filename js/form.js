@@ -9,10 +9,12 @@
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+  var PIN_MAIN_WIDTH = 65;
+  var PIN_MAIN_HEIGHT = 87;
   var PIN_INIT_WIDTH = 156;
   var PIN_INIT_HEIGHT = 156;
+  var PIN_INIT_TOP = '375px';
+  var PIN_INIT_LEFT = '570px';
 
   var pinDestination = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
@@ -117,12 +119,12 @@
 
   function activatePage() {
     adForm.classList.remove('ad-form--disabled');
+    window.util.setAddress(pinMain.style.left, PIN_MAIN_WIDTH / 2, pinMain.style.top, PIN_MAIN_HEIGHT);
     document.querySelector('.map').classList.remove('map--faded');
     switchForm(adFormElements, false);
     switchForm(mapFiltersElements, false);
     window.getNewElements(NOTICES_QUANTITY, cardTemplate, cardDestination, 'cards');
     window.getNewElements(NOTICES_QUANTITY, pinTemplate, pinDestination, 'pins');
-    setAddress(pinMain.style.left, PIN_WIDTH / 2, pinMain.style.top, PIN_HEIGHT);
     adForm.addEventListener('change', checkSelects);
     // set address input readonly:
     address.readOnly = true;
@@ -134,8 +136,10 @@
     document.querySelector('.map').classList.add('map--faded');
     switchForm(adFormElements, true);
     switchForm(mapFiltersElements, true);
+    pinMain.style.top = PIN_INIT_TOP;
+    pinMain.style.left = PIN_INIT_LEFT;
     // set Address for initial pin
-    setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
+    window.util.setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
     if (mapFaded) {
       /* // remove eventListeners for pins (don't work!):
       for (var i = 1; i < pinsCollection.length; i++) {
@@ -160,12 +164,6 @@
     }
   }
 
-  function setAddress(left, width, top, height) {
-    var leftPosition = Math.floor(parseInt(left, 10) + width);
-    var topPosition = Math.floor(parseInt(top, 10) + height);
-    var addressForm = leftPosition + ', ' + topPosition;
-    document.querySelector('#address').value = addressForm;
-  }
 
   checkGuestsRoomsCorrespondence();
   // set correct number of guests
@@ -174,13 +172,17 @@
   priceInput.setAttribute('min', '1000');
   priceInput.setAttribute('placeholder', '1000');
   // set Address for initial pin
-  setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
+  window.util.setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
 
   deactivatePage();
 
   // enable form:
-  pinMain.addEventListener('mousedown', function () {
-    activatePage();
+  pinMain.addEventListener('mousedown', function (evt) {
+    if (document.querySelector('.map--faded')) {
+      activatePage(evt);
+    } else {
+      window.onPinMove(evt);
+    }
   });
 
   pinMain.addEventListener('keydown', function (evt) {

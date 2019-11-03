@@ -34,6 +34,12 @@
     },
     onCloseButtonClick: function (evt) {
       evt.target.closest('.popup').style.display = 'none';
+    },
+    setAddress: function (left, width, top, height) {
+      var leftPosition = Math.floor(parseInt(left, 10) + width);
+      var topPosition = Math.floor(parseInt(top, 10) + height);
+      var addressForm = leftPosition + ', ' + topPosition;
+      document.querySelector('#address').value = addressForm;
     }
   };
 
