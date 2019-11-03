@@ -178,10 +178,10 @@
 
   // enable form:
   pinMain.addEventListener('mousedown', function (evt) {
-    if (document.querySelector('.map--faded')) {
+
       activatePage(evt);
       window.onPinMove(evt);
-    }
+
   });
 
   pinMain.addEventListener('keydown', function (evt) {
