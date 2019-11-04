@@ -9,8 +9,8 @@
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
-  var PIN_MAIN_WIDTH = 65;
-  var PIN_MAIN_HEIGHT = 87;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 87;
   var PIN_INIT_WIDTH = 156;
   var PIN_INIT_HEIGHT = 156;
   var PIN_INIT_TOP = '375px';
@@ -23,7 +23,7 @@
   var cardTemplate = document.querySelector('#card')
     .content.querySelector('.map__card');
   var adForm = document.querySelector('.ad-form');
-  var pinMain = document.querySelector('.map__pin');
+  var mainPin = document.querySelector('.map__pin');
   var cardsCollection = document.getElementsByClassName('map__card');
   var pinsCollection = document.getElementsByClassName('map__pin--new');
   var roomNumber = adForm.querySelector('#room_number');
@@ -119,7 +119,8 @@
 
   function activatePage() {
     adForm.classList.remove('ad-form--disabled');
-    window.util.setAddress(pinMain.style.left, PIN_MAIN_WIDTH / 2, pinMain.style.top, PIN_MAIN_HEIGHT);
+    var addressCoords = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
+    document.querySelector('#address').value = addressCoords;
     document.querySelector('.map').classList.remove('map--faded');
     switchForm(adFormElements, false);
     switchForm(mapFiltersElements, false);
@@ -128,7 +129,7 @@
     adForm.addEventListener('change', checkSelects);
     // set address input readonly:
     address.readOnly = true;
-    // disable pinMain when page is activated
+    // disable mainPin when page is activated
   }
 
   function deactivatePage() {
@@ -136,10 +137,11 @@
     document.querySelector('.map').classList.add('map--faded');
     switchForm(adFormElements, true);
     switchForm(mapFiltersElements, true);
-    pinMain.style.top = PIN_INIT_TOP;
-    pinMain.style.left = PIN_INIT_LEFT;
+    mainPin.style.top = PIN_INIT_TOP;
+    mainPin.style.left = PIN_INIT_LEFT;
     // set Address for initial pin
-    window.util.setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
+    var addressCoords = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
+    document.querySelector('#address').value = addressCoords;
     if (mapFaded) {
       /* // remove eventListeners for pins (don't work!):
       for (var i = 1; i < pinsCollection.length; i++) {
@@ -169,22 +171,22 @@
   // set correct number of guests
   guestNumber[2].selected = true;
   // set min price for flat:
-  priceInput.setAttribute('min', '1000');
-  priceInput.setAttribute('placeholder', '1000');
+  priceInput.setAttribute('min', 'MIN_FLAT_PRICE');
+  priceInput.setAttribute('placeholder', 'MIN_FLAT_PRICE');
   // set Address for initial pin
-  window.util.setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
-
+  var addressCoords = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
+  document.querySelector('#address').value = addressCoords;
   deactivatePage();
 
   // enable form:
-  pinMain.addEventListener('mousedown', function (evt) {
+  mainPin.addEventListener('mousedown', function (evt) {
     if (document.querySelector('.map--faded')) {
       activatePage(evt);
     }
-      window.onPinMove(evt);
+    window.onPinMove(evt);
   });
 
-  pinMain.addEventListener('keydown', function (evt) {
+  mainPin.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       activatePage();
     }

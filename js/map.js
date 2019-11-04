@@ -8,12 +8,12 @@
   var MAP_TOP_MAX = 630;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
-  var PIN_MAIN_WIDTH = 65;
-  var PIN_MAIN_HEIGHT = 87;
-  var PIN_LEFT_MIN = MAP_LEFT_X - PIN_MAIN_WIDTH / 2;
-  var PIN_LEFT_MAX = MAP_WIDTH - PIN_MAIN_WIDTH / 2;
-  var PIN_TOP_MIN = MAP_TOP_MIN - PIN_MAIN_HEIGHT;
-  var PIN_TOP_MAX = MAP_TOP_MAX - PIN_MAIN_HEIGHT;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 87;
+  var PIN_LEFT_MIN = MAP_LEFT_X - MAIN_PIN_WIDTH / 2;
+  var PIN_LEFT_MAX = MAP_WIDTH - MAIN_PIN_WIDTH / 2;
+  var PIN_TOP_MIN = MAP_TOP_MIN - MAIN_PIN_HEIGHT;
+  var PIN_TOP_MAX = MAP_TOP_MAX - MAIN_PIN_HEIGHT;
 
   var cardsCollection = document.getElementsByClassName('map__card');
   var pinMain = document.querySelector('.map__pin');
@@ -120,14 +120,16 @@
       }
 
 
-      window.util.setAddress(pinMain.style.left, PIN_MAIN_WIDTH / 2, pinMain.style.top, PIN_MAIN_HEIGHT);
+      var addressCoords = window.util.getFormattedAddress(pinMain.style.left, MAIN_PIN_WIDTH / 2, pinMain.style.top, MAIN_PIN_HEIGHT);
+      document.querySelector('#address').value = addressCoords;
     }
 
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      window.util.setAddress(pinMain.style.left, PIN_MAIN_WIDTH / 2, pinMain.style.top, PIN_MAIN_HEIGHT);
+      var addressCoords = window.util.getFormattedAddress(pinMain.style.left, MAIN_PIN_WIDTH / 2, pinMain.style.top, MAIN_PIN_HEIGHT);
+      document.querySelector('#address').value = addressCoords;
 
     }
     document.addEventListener('mousemove', onMouseMove);
