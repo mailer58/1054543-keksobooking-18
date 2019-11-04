@@ -2,21 +2,10 @@
 
 (function () {
 
-  var MAP_WIDTH = 1200;
-  var MAP_LEFT_X = 0;
-  var MAP_TOP_MIN = 130;
-  var MAP_TOP_MAX = 630;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 87;
-  var PIN_LEFT_MIN = MAP_LEFT_X - MAIN_PIN_WIDTH / 2;
-  var PIN_LEFT_MAX = MAP_WIDTH - MAIN_PIN_WIDTH / 2;
-  var PIN_TOP_MIN = MAP_TOP_MIN - MAIN_PIN_HEIGHT;
-  var PIN_TOP_MAX = MAP_TOP_MAX - MAIN_PIN_HEIGHT;
 
   var cardsCollection = document.getElementsByClassName('map__card');
-  var pinMain = document.querySelector('.map__pin');
 
   function onPinClick(i) {
     var openCard = document.querySelector('.open');
@@ -91,51 +80,5 @@
   }
 
   window.getNewElements = getNewElements;
-
-  // move main pin:
-  function onPinMove(evt) {
-    evt.preventDefault();
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
-    function onMouseMove(moveEvt) {
-      moveEvt.preventDefault();
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-      if ((pinMain.offsetLeft - shift.x) >= PIN_LEFT_MIN &&
-        (pinMain.offsetLeft - shift.x) <= PIN_LEFT_MAX &&
-        (pinMain.offsetTop - shift.y) >= PIN_TOP_MIN &&
-        (pinMain.offsetTop - shift.y) <= PIN_TOP_MAX) {
-        pinMain.style.top = pinMain.offsetTop - shift.y + 'px';
-        pinMain.style.left = pinMain.offsetLeft - shift.x + 'px';
-      }
-
-
-      var addressCoords = window.util.getFormattedAddress(pinMain.style.left, MAIN_PIN_WIDTH / 2, pinMain.style.top, MAIN_PIN_HEIGHT);
-      document.querySelector('#address').value = addressCoords;
-    }
-
-    function onMouseUp(upEvt) {
-      upEvt.preventDefault();
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      var addressCoords = window.util.getFormattedAddress(pinMain.style.left, MAIN_PIN_WIDTH / 2, pinMain.style.top, MAIN_PIN_HEIGHT);
-      document.querySelector('#address').value = addressCoords;
-
-    }
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  }
-
-  window.onPinMove = onPinMove;
 
 })();
