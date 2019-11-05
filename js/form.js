@@ -127,8 +127,7 @@
 
   function activatePage() {
     adForm.classList.remove('ad-form--disabled');
-    var addressCoords = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
-    document.querySelector('#address').value = addressCoords;
+    address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
     document.querySelector('.map').classList.remove('map--faded');
     toggleFormAvailability(adFormElements, false);
     toggleFormAvailability(mapFiltersElements, false);
@@ -148,8 +147,7 @@
     mainPin.style.top = PIN_INIT_TOP;
     mainPin.style.left = PIN_INIT_LEFT;
     // set Address for initial pin
-    var addressCoords = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
-    document.querySelector('#address').value = addressCoords;
+    address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
     if (mapFaded) {
       /* // remove eventListeners for pins (don't work!):
       for (var i = 1; i < pinsCollection.length; i++) {
@@ -182,8 +180,7 @@
   priceInput.setAttribute('min', 'MIN_FLAT_PRICE');
   priceInput.setAttribute('placeholder', 'MIN_FLAT_PRICE');
   // set Address for initial pin
-  var addressCoords = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
-  document.querySelector('#address').value = addressCoords;
+  address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
   deactivatePage();
 
   // enable form:
@@ -216,19 +213,14 @@
         mainPin.style.top = mainPin.offsetTop - shift.y + 'px';
         mainPin.style.left = mainPin.offsetLeft - shift.x + 'px';
       }
-
-
-      addressCoords = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
-      address.value = addressCoords;
+      address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
     }
 
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      addressCoords = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
-      address.value = addressCoords;
-
+      address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
     }
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
