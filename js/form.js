@@ -219,7 +219,7 @@
 
 
       addressCoords = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
-      document.querySelector('#address').value = addressCoords;
+      address.value = addressCoords;
     }
 
     function onMouseUp(upEvt) {
@@ -227,7 +227,7 @@
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       addressCoords = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
-      document.querySelector('#address').value = addressCoords;
+      address.value = addressCoords;
 
     }
     document.addEventListener('mousemove', onMouseMove);

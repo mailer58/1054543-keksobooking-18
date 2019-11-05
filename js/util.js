@@ -38,8 +38,7 @@
     getFormattedAddress: function (left, width, top, height) {
       var leftPosition = Math.floor(parseInt(left, 10) + width);
       var topPosition = Math.floor(parseInt(top, 10) + height);
-      var addressCoords = leftPosition + ', ' + topPosition;
-      return addressCoords;
+      return leftPosition + ', ' + topPosition;
     }
   };
 
