@@ -9,10 +9,20 @@
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 87;
   var PIN_INIT_WIDTH = 156;
   var PIN_INIT_HEIGHT = 156;
+  var PIN_INIT_TOP = '375px';
+  var PIN_INIT_LEFT = '570px';
+  var MAP_WIDTH = 1200;
+  var MAP_LEFT_X = 0;
+  var MAP_TOP_MIN = 130;
+  var MAP_TOP_MAX = 630;
+  var PIN_LEFT_MIN = MAP_LEFT_X - MAIN_PIN_WIDTH / 2;
+  var PIN_LEFT_MAX = MAP_WIDTH - MAIN_PIN_WIDTH / 2;
+  var PIN_TOP_MIN = MAP_TOP_MIN - MAIN_PIN_HEIGHT;
+  var PIN_TOP_MAX = MAP_TOP_MAX - MAIN_PIN_HEIGHT;
 
   var pinDestination = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
@@ -21,7 +31,7 @@
   var cardTemplate = document.querySelector('#card')
     .content.querySelector('.map__card');
   var adForm = document.querySelector('.ad-form');
-  var pinMain = document.querySelector('.map__pin');
+  var mainPin = document.querySelector('.map__pin');
   var cardsCollection = document.getElementsByClassName('map__card');
   var pinsCollection = document.getElementsByClassName('map__pin--new');
   var roomNumber = adForm.querySelector('#room_number');
@@ -47,7 +57,7 @@
   }
 
   // activation/deactivation of form
-  function switchForm(collection, isDisabled) {
+  function toggleFormAvailability(collection, isDisabled) {
     for (var i = 0; i < collection.length; i++) {
       collection[i].disabled = isDisabled;
     }
@@ -117,25 +127,27 @@
 
   function activatePage() {
     adForm.classList.remove('ad-form--disabled');
+    address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
     document.querySelector('.map').classList.remove('map--faded');
-    switchForm(adFormElements, false);
-    switchForm(mapFiltersElements, false);
+    toggleFormAvailability(adFormElements, false);
+    toggleFormAvailability(mapFiltersElements, false);
     window.getNewElements(NOTICES_QUANTITY, cardTemplate, cardDestination, 'cards');
     window.getNewElements(NOTICES_QUANTITY, pinTemplate, pinDestination, 'pins');
-    setAddress(pinMain.style.left, PIN_WIDTH / 2, pinMain.style.top, PIN_HEIGHT);
     adForm.addEventListener('change', checkSelects);
     // set address input readonly:
     address.readOnly = true;
-    // disable pinMain when page is activated
+    // disable mainPin when page is activated
   }
 
   function deactivatePage() {
     adForm.classList.add('ad-form--disabled');
     document.querySelector('.map').classList.add('map--faded');
-    switchForm(adFormElements, true);
-    switchForm(mapFiltersElements, true);
+    toggleFormAvailability(adFormElements, true);
+    toggleFormAvailability(mapFiltersElements, true);
+    mainPin.style.top = PIN_INIT_TOP;
+    mainPin.style.left = PIN_INIT_LEFT;
     // set Address for initial pin
-    setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
+    address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
     if (mapFaded) {
       /* // remove eventListeners for pins (don't work!):
       for (var i = 1; i < pinsCollection.length; i++) {
@@ -160,30 +172,61 @@
     }
   }
 
-  function setAddress(left, width, top, height) {
-    var leftPosition = Math.floor(parseInt(left, 10) + width);
-    var topPosition = Math.floor(parseInt(top, 10) + height);
-    var addressForm = leftPosition + ', ' + topPosition;
-    document.querySelector('#address').value = addressForm;
-  }
 
   checkGuestsRoomsCorrespondence();
   // set correct number of guests
   guestNumber[2].selected = true;
   // set min price for flat:
-  priceInput.setAttribute('min', '1000');
-  priceInput.setAttribute('placeholder', '1000');
+  priceInput.setAttribute('min', 'MIN_FLAT_PRICE');
+  priceInput.setAttribute('placeholder', 'MIN_FLAT_PRICE');
   // set Address for initial pin
-  setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
-
+  address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
   deactivatePage();
 
   // enable form:
-  pinMain.addEventListener('mousedown', function () {
-    activatePage();
+  mainPin.addEventListener('mousedown', function (evt) {
+    if (document.querySelector('.map--faded')) {
+      activatePage();
+    }
+    // move Pin:
+    evt.preventDefault();
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    function onMouseMove(moveEvt) {
+      moveEvt.preventDefault();
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+      if ((mainPin.offsetLeft - shift.x) >= PIN_LEFT_MIN &&
+        (mainPin.offsetLeft - shift.x) <= PIN_LEFT_MAX &&
+        (mainPin.offsetTop - shift.y) >= PIN_TOP_MIN &&
+        (mainPin.offsetTop - shift.y) <= PIN_TOP_MAX) {
+        mainPin.style.top = mainPin.offsetTop - shift.y + 'px';
+        mainPin.style.left = mainPin.offsetLeft - shift.x + 'px';
+      }
+      address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
+    }
+
+    function onMouseUp(upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
+    }
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 
-  pinMain.addEventListener('keydown', function (evt) {
+  mainPin.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       activatePage();
     }
