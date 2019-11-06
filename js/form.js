@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var NOTICES_QUANTITY = 8;
   var ENTER_KEYCODE = 13;
   var DELETE_KEYCODE = 46;
   var ESC_KEYCODE = 27;
@@ -13,13 +12,21 @@
   var PIN_HEIGHT = 70;
   var PIN_INIT_WIDTH = 156;
   var PIN_INIT_HEIGHT = 156;
+  var PIN_INIT_TOP = '375px';
+  var PIN_INIT_LEFT = '570px';
+  var MAP_WIDTH = 1200;
+  var MAP_LEFT_X = 0;
+  var MAP_TOP_MIN = 130;
+  var MAP_TOP_MAX = 630;
+  var PIN_LEFT_MIN = MAP_LEFT_X - MAIN_PIN_WIDTH / 2;
+  var PIN_LEFT_MAX = MAP_WIDTH - MAIN_PIN_WIDTH / 2;
+  var PIN_TOP_MIN = MAP_TOP_MIN - MAIN_PIN_HEIGHT;
+  var PIN_TOP_MAX = MAP_TOP_MAX - MAIN_PIN_HEIGHT;
+  var PINS_NUMBER = 5;
 
   var pinDestination = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
     .content.querySelector('.map__pin');
-  var cardDestination = document.querySelector('.map__pins');
-  var cardTemplate = document.querySelector('#card')
-    .content.querySelector('.map__card');
   var adForm = document.querySelector('.ad-form');
   var pinMain = document.querySelector('.map__pin');
   var cardsCollection = document.getElementsByClassName('map__card');
@@ -35,14 +42,17 @@
   var timeOut = document.querySelector('#timeout');
   var address = document.querySelector('#address');
   var mapFaded = document.getElementsByClassName('map--faded')[0];
+  var errorDestination = document.querySelector('main');
+  var errorTemplate = document.querySelector('#error')
+    .content.querySelector('.error');
+  var submitButton = document.querySelector('.ad-form__submit');
+  var serverData;
 
-  function onPopupEscPress(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      var openCard = document.querySelector('.open');
-      if (openCard) {
-        openCard.style.display = 'none';
-        openCard.classList.remove('open');
-      }
+  function closeCard() {
+    var openCard = document.querySelector('.open');
+    if (openCard) {
+      openCard.style.display = 'none';
+      openCard.classList.remove('open');
     }
   }
 
@@ -118,22 +128,34 @@
   function activatePage() {
     adForm.classList.remove('ad-form--disabled');
     document.querySelector('.map').classList.remove('map--faded');
-    switchForm(adFormElements, false);
-    switchForm(mapFiltersElements, false);
-    window.getNewElements(NOTICES_QUANTITY, cardTemplate, cardDestination, 'cards');
-    window.getNewElements(NOTICES_QUANTITY, pinTemplate, pinDestination, 'pins');
-    setAddress(pinMain.style.left, PIN_WIDTH / 2, pinMain.style.top, PIN_HEIGHT);
+    toggleFormAvailability(adFormElements, false);
+    toggleFormAvailability(mapFiltersElements, false);
     adForm.addEventListener('change', checkSelects);
     // set address input readonly:
     address.readOnly = true;
-    // disable pinMain when page is activated
+    // disable mainPin when page is activated
+    // load data:
+    window.backend.load(onDownload, onErrorDownload);
+    submitButton.disabled = false;
   }
 
   function deactivatePage() {
     adForm.classList.add('ad-form--disabled');
+    // set flat as an default option:
+    houseType[1].selected = true;
+    // reset price input:
+    priceInput.value = '';
+    priceInput.setAttribute('placeholder', '1000');
+    // set correct number of rooms and guests:
+    roomNumber[0].selected = true;
+    guestNumber[2].selected = true;
+    // disable submit button:
+    submitButton.disabled = true;
+    // reset title:
+    titleInput.value = '';
     document.querySelector('.map').classList.add('map--faded');
-    switchForm(adFormElements, true);
-    switchForm(mapFiltersElements, true);
+    mainPin.style.top = PIN_INIT_TOP;
+    mainPin.style.left = PIN_INIT_LEFT;
     // set Address for initial pin
     setAddress(pinMain.style.left, PIN_INIT_WIDTH / 2, pinMain.style.top, PIN_INIT_HEIGHT / 2);
     if (mapFaded) {
@@ -160,14 +182,36 @@
     }
   }
 
-  function setAddress(left, width, top, height) {
-    var leftPosition = Math.floor(parseInt(left, 10) + width);
-    var topPosition = Math.floor(parseInt(top, 10) + height);
-    var addressForm = leftPosition + ', ' + topPosition;
-    document.querySelector('#address').value = addressForm;
+  function appendMessage(template, destination) {
+    var newElement = template.cloneNode(true);
+    destination.appendChild(newElement);
   }
 
-  checkGuestsRoomsCorrespondence();
+  function onDownload(response) {
+    window.appendPins(PINS_NUMBER, pinTemplate, pinDestination, response);
+    serverData = response;
+    return serverData;
+  }
+
+  function onErrorDownload() {
+    appendMessage(errorTemplate, errorDestination);
+    var errorText = document.getElementsByClassName('error__message')[0];
+    errorText.classList.add('download-error');
+    errorText.innerHTML = 'Ошибка загрузки данных с сервера';
+    var errorButton = document.getElementsByClassName('error__button')[0];
+    document.addEventListener('click', removeDownloadErrorMessage);
+    errorButton.addEventListener('click', removeDownloadErrorMessage);
+  }
+
+  function removeDownloadErrorMessage() {
+    var errorButton = document.getElementsByClassName('error__button')[0];
+    var errorMessage = document.getElementsByClassName('error')[0];
+    errorMessage.remove();
+    activatePage();
+    errorButton.removeEventListener('click', removeDownloadErrorMessage);
+    document.removeEventListener('click', removeDownloadErrorMessage);
+  }
+
   // set correct number of guests
   guestNumber[2].selected = true;
   // set min price for flat:
@@ -193,7 +237,23 @@
     if (evt.keyCode === DELETE_KEYCODE) {
       deactivatePage();
     }
-    onPopupEscPress(evt);
+    if (evt.keyCode === ESC_KEYCODE) {
+      var successMessage = document.getElementsByClassName('success')[0];
+      var errorDownloadMessage = document.getElementsByClassName('download-error')[0];
+      var errorUploadMessage = document.getElementsByClassName('upload-error')[0];
+
+      closeCard();
+
+      if (successMessage) {
+        removeSuccessMessage();
+      }
+      if (errorDownloadMessage) {
+        removeDownloadErrorMessage();
+      }
+      if (errorUploadMessage) {
+        removeUploadErrorMessage();
+      }
+    }
   });
 
   titleInput.addEventListener('invalid', function () {
