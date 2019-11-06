@@ -22,7 +22,9 @@
   var PIN_LEFT_MAX = MAP_WIDTH - MAIN_PIN_WIDTH / 2;
   var PIN_TOP_MIN = MAP_TOP_MIN - MAIN_PIN_HEIGHT;
   var PIN_TOP_MAX = MAP_TOP_MAX - MAIN_PIN_HEIGHT;
+
   var PINS_NUMBER = 5;
+
 
   var pinDestination = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
@@ -131,13 +133,16 @@
     document.querySelector('.map').classList.remove('map--faded');
     toggleFormAvailability(adFormElements, false);
     toggleFormAvailability(mapFiltersElements, false);
+
     adForm.addEventListener('change', checkSelects);
     // set address input readonly:
     address.readOnly = true;
     // disable mainPin when page is activated
+
     // load data:
     window.backend.load(onDownload, onErrorDownload);
     submitButton.disabled = false;
+
   }
 
   function deactivatePage() {
@@ -155,6 +160,10 @@
     // reset title:
     titleInput.value = '';
     document.querySelector('.map').classList.add('map--faded');
+
+    toggleFormAvailability(adFormElements, true);
+    toggleFormAvailability(mapFiltersElements, true);
+
     mainPin.style.top = PIN_INIT_TOP;
     mainPin.style.left = PIN_INIT_LEFT;
     // set Address for initial pin
@@ -182,6 +191,7 @@
       }
     }
   }
+
 
   function appendMessage(template, destination) {
     var newElement = template.cloneNode(true);
@@ -212,6 +222,7 @@
     errorButton.removeEventListener('click', removeDownloadErrorMessage);
     document.removeEventListener('click', removeDownloadErrorMessage);
   }
+
 
   // set correct number of guests
   guestNumber[2].selected = true;

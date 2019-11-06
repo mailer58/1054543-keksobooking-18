@@ -5,6 +5,7 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
+
   var cardDestination = document.querySelector('.map__pins');
   var cardTemplate = document.querySelector('#card')
     .content.querySelector('.map__card');
@@ -29,6 +30,7 @@
       openCard.style.display = 'none';
       openCard.classList.remove('open');
       appendCard(i, response);
+
     }
   }
 
@@ -38,13 +40,17 @@
     newElement.style.top = arr[i].location.y - PIN_HEIGHT + 'px';
     newElement.querySelector('img').src = arr[i].author.avatar;
     newElement.querySelector('img').alt = arr[i].offer.title;
+
     newElement.addEventListener('click', onPinClick.bind(null, i, arr));
+
     newElement.setAttribute('tabindex', '0');
   }
 
   function generateCards(newElement, i, arr) {
     newElement.style.display = 'none';
+
     newElement.classList.add('open');
+
     newElement.querySelector('.popup__avatar').src = arr[i].author.avatar;
     newElement.querySelector('.popup__title').textContent = arr[i].offer.title;
     newElement.querySelector('.popup__text--address').textContent = arr[i].offer.address;
@@ -70,16 +76,20 @@
     newElement.querySelector('.popup__close').addEventListener('click', window.util.onCloseButtonClick);
   }
 
+
   function appendPins(numberOfPins, template, destination, arr) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < numberOfPins; i++) {
       var newElement = template.cloneNode(true);
       fragment.appendChild(newElement);
       generatePins(newElement, i, arr);
-    }
+
+ 
     destination.appendChild(fragment);
   }
 
+
   window.appendPins = appendPins;
+
 
 })();
