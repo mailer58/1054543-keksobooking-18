@@ -34,6 +34,11 @@
     },
     onCloseButtonClick: function (evt) {
       evt.target.closest('.popup').style.display = 'none';
+    },
+    getFormattedAddress: function (left, width, top, height) {
+      var leftPosition = Math.floor(parseInt(left, 10) + width);
+      var topPosition = Math.floor(parseInt(top, 10) + height);
+      return leftPosition + ', ' + topPosition;
     }
   };
 
