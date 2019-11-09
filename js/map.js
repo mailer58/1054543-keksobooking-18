@@ -5,19 +5,30 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
-  var cardsCollection = document.getElementsByClassName('map__card');
+  var cardDestination = document.querySelector('.map__pins');
+  var cardTemplate = document.querySelector('#card')
+    .content.querySelector('.map__card');
 
-  function onPinClick(i) {
-    var openCard = document.querySelector('.open');
+  function appendCard(i, response) {
+    var fragment = document.createDocumentFragment();
+    var newElement = cardTemplate.cloneNode(true);
+    fragment.appendChild(newElement);
+    generateCards(newElement, i, response);
+    // generation innerHTML for features
+    generateFeatures(newElement, i, response);
+    cardDestination.appendChild(fragment);
+    newElement.style.display = 'block';
+  }
+
+  function onPinClick(i, response) {
+    var openCard = document.getElementsByClassName('open')[0];
     // there is no open card:
     if (!openCard) {
-      cardsCollection[i].style.display = 'block';
-      cardsCollection[i].classList.add('open');
+      appendCard(i, response);
     } /* there is open card:*/ else {
       openCard.style.display = 'none';
       openCard.classList.remove('open');
-      cardsCollection[i].style.display = 'block';
-      cardsCollection[i].classList.add('open');
+      appendCard(i, response);
     }
   }
 
@@ -27,12 +38,13 @@
     newElement.style.top = arr[i].location.y - PIN_HEIGHT + 'px';
     newElement.querySelector('img').src = arr[i].author.avatar;
     newElement.querySelector('img').alt = arr[i].offer.title;
-    newElement.addEventListener('click', onPinClick.bind(null, i));
+    newElement.addEventListener('click', onPinClick.bind(null, i, arr));
     newElement.setAttribute('tabindex', '0');
   }
 
   function generateCards(newElement, i, arr) {
     newElement.style.display = 'none';
+    newElement.classList.add('open');
     newElement.querySelector('.popup__avatar').src = arr[i].author.avatar;
     newElement.querySelector('.popup__title').textContent = arr[i].offer.title;
     newElement.querySelector('.popup__text--address').textContent = arr[i].offer.address;
@@ -58,27 +70,16 @@
     newElement.querySelector('.popup__close').addEventListener('click', window.util.onCloseButtonClick);
   }
 
-  function getNewElements(numberOfCopy, template, destination, newElementName) {
+  function appendPins(numberOfPins, template, destination, arr) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < numberOfCopy; i++) {
+    for (var i = 0; i < numberOfPins; i++) {
       var newElement = template.cloneNode(true);
       fragment.appendChild(newElement);
-      switch (newElementName) {
-        // generate pins
-        case 'pins':
-          generatePins(newElement, i, window.notices);
-          break;
-          /* generate cards */
-        case 'cards':
-          generateCards(newElement, i, window.notices);
-          // generation innerHTML for features
-          generateFeatures(newElement, i, window.notices);
-          break;
-      }
+      generatePins(newElement, i, arr);
     }
     destination.appendChild(fragment);
   }
 
-  window.getNewElements = getNewElements;
+  window.appendPins = appendPins;
 
 })();
