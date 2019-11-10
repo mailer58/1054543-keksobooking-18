@@ -427,8 +427,6 @@
         for (var i = 0; i < notice.offer.features.length; i++) {
           if (notice.offer.features[i] === featureName) {
             return notice;
-          } else {
-            return false;
           }
         }
       });
