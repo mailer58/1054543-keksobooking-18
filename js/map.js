@@ -31,6 +31,7 @@
       appendCard(i, response);
     }
   }
+  window.onPinClick = onPinClick;
 
   function generatePins(newElement, i, arr) {
     newElement.classList.add('map__pin--new');

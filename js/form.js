@@ -45,6 +45,7 @@
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
   var address = document.querySelector('#address');
+  var features = document.querySelectorAll('.feature__checkbox');
   var submitButton = document.querySelector('.ad-form__submit');
   var resetButton = document.querySelector('.ad-form__reset');
   var descriptionArea = document.querySelector('#description');
@@ -53,8 +54,8 @@
   var userAvatarPreview = document.querySelector('.ad-form-header__preview img');
   var photoHouseInput = document.querySelector('.ad-form__input');
   var photoHousePreviewDiv = document.querySelector('.ad-form__photo');
-  var features = document.querySelectorAll('.feature__checkbox');
   var photoHousePreview;
+
 
   // elements of the filter:
   var houseTypeFilter = document.querySelector('#housing-type');
@@ -67,6 +68,7 @@
   var parkingFilter = document.querySelector('#filter-parking');
   var elevatorFilter = document.querySelector('#filter-elevator');
   var conditionerFilter = document.querySelector('#filter-conditioner');
+  var mapFeatures = document.querySelectorAll('.map__checkbox');
 
   // vars for cloning:
   var pinDestination = document.querySelector('.map__pins');
@@ -159,6 +161,21 @@
     }
   }
 
+  // remove Html collection of pins:
+  function removePins() {
+    while (pinsCollection.length) {
+      pinsCollection[0].parentNode.removeChild(pinsCollection[0]);
+    }
+  }
+
+  function resetCheckBoxes(checkBoxes) {
+    for (var i = 0; i < checkBoxes.length; i++) {
+      if (checkBoxes[i].checked) {
+        checkBoxes[i].checked = false;
+      }
+    }
+  }
+
   function resetForm() {
     // restore default avatar:
     userAvatarPreview.setAttribute('src', 'img/muffin-grey.svg');
@@ -186,12 +203,8 @@
     // reset timeIn and timeOut:
     timeIn.selectedIndex = 0;
     timeOut.selectedIndex = 0;
-    // reset checkboxs:
-    for (var i = 0; i < features.length; i++) {
-      if (features[i].checked) {
-        features[i].checked = false;
-      }
-    }
+    // reset checkboxes of the form:
+    resetCheckBoxes(features);
     // reset textarea:
     descriptionArea.value = '';
     // center main pin:
@@ -203,13 +216,13 @@
     } else {
       address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
     }
-  }
-
-  // remove Html collection of pins:
-  function removePins() {
-    while (pinsCollection.length) {
-      pinsCollection[0].parentNode.removeChild(pinsCollection[0]);
+    // reset filters:
+    var filterSelects = mapFilters.querySelectorAll('select');
+    for (var i = 0; i < filterSelects.length; i++) {
+      filterSelects[i].selectedIndex = 0;
     }
+    // reset checkboxes of the filter:
+    resetCheckBoxes(mapFeatures);
   }
 
   function activatePage() {
@@ -223,6 +236,7 @@
     adForm.addEventListener('reset', function (evt) {
       evt.preventDefault();
       resetForm();
+      filterServerData();
     });
     mapFilters.addEventListener('change', window.util.debounce(filterServerData));
     // enable form:
@@ -243,13 +257,6 @@
     toggleFormAvailability(mapFiltersElements, true);
     submitButton.disabled = true;
     resetButton.disabled = true;
-
-    /* // remove eventListeners for pins (don't work!):
-    for (var i = 1; i < pinsCollection.length; i++) {
-      pinsCollection[i].removeEventListener('click', onPinClick);
-      // console.log(pinsCollection[i]);
-    }*/
-
     // remove Html collection of pins:
     removePins();
     // remove eventListeners:
