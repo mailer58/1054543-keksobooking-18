@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
   window.util = {
     getRandomNumber: function (number) {
       return Math.floor(Math.random() * number);
@@ -33,12 +34,25 @@
       return randomArray;
     },
     onCloseButtonClick: function (evt) {
-      evt.target.closest('.popup').style.display = 'none';
+      evt.target.closest('.popup').removeEventListener('click', window.util.onCloseButtonClick);
+      evt.target.closest('.popup').remove();
     },
     getFormattedAddress: function (left, width, top, height) {
       var leftPosition = Math.floor(parseInt(left, 10) + width);
       var topPosition = Math.floor(parseInt(top, 10) + height);
       return leftPosition + ', ' + topPosition;
+    },
+    debounce: function (func) {
+      var lastTimeout = null;
+      return function () {
+        var parameters = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          func.apply(null, parameters);
+        }, DEBOUNCE_INTERVAL);
+      };
     }
   };
 
