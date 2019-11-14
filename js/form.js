@@ -321,7 +321,7 @@
     if (type === 'any') {
       return true;
     } else {
-      if (currentItem.offer.type === houseTypeFilter.value) {
+      if (currentItem.offer.type === typeFilter.value) {
         return currentItem;
       } else {
         return false;
@@ -418,7 +418,7 @@
           currentFilter[target.value] = 'false';
         }
     }
-    filterServerData();
+    window.form.filterServerData();
   });
 
   // add user's images:
