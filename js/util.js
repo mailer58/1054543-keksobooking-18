@@ -2,6 +2,11 @@
 
 (function () {
   var DEBOUNCE_INTERVAL = 500;
+
+  var userAvatarPreview = document.querySelector('.ad-form-header__preview img');
+  var titleInput = document.querySelector('#title');
+
+
   window.util = {
     getRandomNumber: function (number) {
       return Math.floor(Math.random() * number);
@@ -53,7 +58,36 @@
           func.apply(null, parameters);
         }, DEBOUNCE_INTERVAL);
       };
-    }
-  };
+    },
+    closeCard: function() {
+      var openCard = document.querySelector('.open');
+      var activePin = document.getElementsByClassName('map__pin--new map__pin--active')[0];
+      if (openCard) {
+        openCard.classList.remove('open');
+        openCard.querySelector('.popup__close').removeEventListener('click', window.util.onCloseButtonClick);
+        openCard.remove();
+        // desactivate current active pin:
+        activePin.classList.remove('map__pin--active');
+      }
+    },
+    // activation/deactivation of the form
+    toggleFormAvailability: function (collection, isDisabled) {
+      for (var i = 0; i < collection.length; i++) {
+        collection[i].disabled = isDisabled;
+      }
+    },
+    // remove Html collection of pins:
+    removePins: function () {
+      var pinsCollection = document.getElementsByClassName('map__pin--new');
+      // remove listeners of pins:
+     for (var i = 0; i < pinsCollection.length; i++) {
+       pinsCollection[i].removeEventListener('click', window.pinsListeners[i]);
+     }
+     // remove pins:
+      while (pinsCollection.length) {
+        pinsCollection[0].parentNode.removeChild(pinsCollection[0]);
+      }
+    },
+    };
 
 })();

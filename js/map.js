@@ -5,6 +5,9 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
+  window.pinsListeners = [];
+  var pinsCollection = document.getElementsByClassName('map__pin--new');
+
   var cardDestination = document.querySelector('.map__pins');
   var cardTemplate = document.querySelector('#card')
     .content.querySelector('.map__card');
@@ -20,14 +23,17 @@
     newElement.style.display = 'block';
   }
 
-  function onPinClick(i, response) {
+  function onPinClick(i, response, evt) {
     var openCard = document.getElementsByClassName('open')[0];
+    var activePin = document.getElementsByClassName('map__pin--new map__pin--active')[0];
     // there is no open card:
     if (!openCard) {
       appendCard(i, response);
+      evt.currentTarget.classList.add('map__pin--active');
     } /* there is open card:*/ else {
-      openCard.style.display = 'none';
-      openCard.classList.remove('open');
+      window.util.closeCard();
+      // activate new pin:
+      evt.currentTarget.classList.add('map__pin--active');
       appendCard(i, response);
     }
   }
@@ -39,7 +45,10 @@
     newElement.style.top = arr[i].location.y - PIN_HEIGHT + 'px';
     newElement.querySelector('img').src = arr[i].author.avatar;
     newElement.querySelector('img').alt = arr[i].offer.title;
-    newElement.addEventListener('click', onPinClick.bind(null, i, arr));
+
+    var onPinClickBinded = onPinClick.bind(null, i, arr);
+    window.pinsListeners.push(onPinClickBinded);
+    newElement.addEventListener('click', onPinClickBinded);
     newElement.setAttribute('tabindex', '0');
   }
 
