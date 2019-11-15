@@ -41,15 +41,12 @@
   function onPinClick(note, evt) {
     var openCard = document.getElementsByClassName('open')[0];
     // there is no open card:
-    if (!openCard) {
-      appendCard(note);
-      evt.currentTarget.classList.add('map__pin--active');
-    } /* there is open card:*/ else {
+    if (openCard) {
       window.map.closeCard();
-      // activate new pin:
-      evt.currentTarget.classList.add('map__pin--active');
-      appendCard(note);
     }
+    // activate new pin:
+    evt.currentTarget.classList.add('map__pin--active');
+    appendCard(note);
   }
   window.onPinClick = onPinClick;
 

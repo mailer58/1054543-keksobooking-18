@@ -97,8 +97,6 @@
       // set correct number of rooms and guests:
       roomNumber[0].selected = true;
       guestNumber[2].selected = true;
-      // disable unnecessary options for guests:
-      window.form.checkGuestsRoomsCorrespondence();
       // reset timeIn and timeOut:
       timeIn.selectedIndex = 0;
       timeOut.selectedIndex = 0;
