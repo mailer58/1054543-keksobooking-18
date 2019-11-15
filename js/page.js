@@ -116,6 +116,7 @@
     mainPin.style.left = PIN_INIT_LEFT;
     mainPin.style.top = PIN_INIT_TOP;
     var mapFaded = document.getElementsByClassName('map--faded')[0];
+    address.readOnly = true;
     if (!mapFaded) { // when the page is activated
       address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
     } else {

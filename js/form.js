@@ -54,8 +54,8 @@
         }
       }
       if (roomsNumber !== guestsNumber) {
-        roomNumber.setCustomValidity('Число гостей и комнта должно совпадать');
-        guestNumber.setCustomValidity('Число гостей и комнта должно совпадать');
+        roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
+        guestNumber.setCustomValidity('Число гостей и комнат должно совпадать');
       } else {
         roomNumber.setCustomValidity('');
         guestNumber.setCustomValidity('');
