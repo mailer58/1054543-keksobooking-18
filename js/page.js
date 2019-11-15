@@ -129,4 +129,7 @@
       window.map.removePins();
     }
   };
+
+  window.page.deactivatePage();
+
 })();
