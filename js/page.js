@@ -46,7 +46,7 @@
       adForm.addEventListener('submit', window.form.onSendButtonClick);
       adForm.addEventListener('reset', function (evt) {
         evt.preventDefault();
-        resetPage();
+        window.page.deactivatePage();
       });
       mapFilters.addEventListener('change', window.filters.onFiltersChange);
       mapFilters.addEventListener('change', window.util.debounce(window.form.filterServerData));
@@ -61,77 +61,72 @@
     deactivatePage: function () {
       adForm.classList.add('ad-form--disabled');
       document.querySelector('.map').classList.add('map--faded');
-      resetPage();
       // disable form:
       window.util.toggleFormAvailability(adFormElements, true);
       window.util.toggleFormAvailability(mapFiltersElements, true);
       submitButton.disabled = true;
       resetButton.disabled = true;
-      // remove Html collection of pins:
-      window.map.removePins();
       // remove eventListeners:
       adForm.removeEventListener('change', window.form.onFormChange);
       adForm.removeEventListener('submit', window.form.onSendButtonClick);
       adForm.removeEventListener('reset', function (evt) {
         evt.preventDefault();
-        resetPage();
+        window.page.deactivatePage();
       });
       mapFilters.removeEventListener('change', window.filters.onFiltersChange);
       mapFilters.removeEventListener('change', window.util.debounce(window.form.filterServerData));
+
+      // restore default avatar:
+      userAvatarPreview.setAttribute('src', 'img/muffin-grey.svg');
+      // delete user's photos:
+      var userPhotos = document.getElementsByClassName('new-img');
+      if (userPhotos) {
+        while (userPhotos.length) {
+          userPhotos[0].parentNode.removeChild(userPhotos[0]);
+        }
+      }
+      // reset title:
+      titleInput.value = '';
+      // set flat as an default option:
+      houseType[1].selected = true;
+      // reset price input:
+      priceInput.value = '';
+      // set min price for flat:
+      priceInput.setAttribute('min', MIN_FLAT_PRICE);
+      priceInput.setAttribute('placeholder', MIN_FLAT_PRICE);
+      // set correct number of rooms and guests:
+      roomNumber[0].selected = true;
+      guestNumber[2].selected = true;
+      // disable unnecessary options for guests:
+      window.form.checkGuestsRoomsCorrespondence();
+      // reset timeIn and timeOut:
+      timeIn.selectedIndex = 0;
+      timeOut.selectedIndex = 0;
+      // reset checkboxes of the form:
+      window.form.resetCheckBoxes(features);
+      // reset textarea:
+      descriptionArea.value = '';
+      // center main pin:
+      mainPin.style.left = PIN_INIT_LEFT;
+      mainPin.style.top = PIN_INIT_TOP;
+      var mapFaded = document.getElementsByClassName('map--faded')[0];
+      address.readOnly = true;
+      if (!mapFaded) { // when the page is activated
+        address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
+      } else {
+        address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
+      }
+      // reset filters:
+      var filterSelects = mapFilters.querySelectorAll('select');
+      for (var i = 0; i < filterSelects.length; i++) {
+        filterSelects[i].selectedIndex = 0;
+      }
+      // reset checkboxes of the filter:
+      window.form.resetCheckBoxes(mapFeatures);
+      // close card:
+      window.map.closeCard();
+      // remove Html collection of pins:
+      window.map.removePins();
     }
   };
-
-  function resetPage() {
-    // restore default avatar:
-    userAvatarPreview.setAttribute('src', 'img/muffin-grey.svg');
-    // delete user's photos:
-    var userPhotos = document.getElementsByClassName('new-img');
-    if (userPhotos) {
-      while (userPhotos.length) {
-        userPhotos[0].parentNode.removeChild(userPhotos[0]);
-      }
-    }
-    // reset title:
-    titleInput.value = '';
-    // set flat as an default option:
-    houseType[1].selected = true;
-    // reset price input:
-    priceInput.value = '';
-    // set min price for flat:
-    priceInput.setAttribute('min', MIN_FLAT_PRICE);
-    priceInput.setAttribute('placeholder', MIN_FLAT_PRICE);
-    // set correct number of rooms and guests:
-    roomNumber[0].selected = true;
-    guestNumber[2].selected = true;
-    // disable unnecessary options for guests:
-    window.form.checkGuestsRoomsCorrespondence();
-    // reset timeIn and timeOut:
-    timeIn.selectedIndex = 0;
-    timeOut.selectedIndex = 0;
-    // reset checkboxes of the form:
-    window.form.resetCheckBoxes(features);
-    // reset textarea:
-    descriptionArea.value = '';
-    // center main pin:
-    mainPin.style.left = PIN_INIT_LEFT;
-    mainPin.style.top = PIN_INIT_TOP;
-    var mapFaded = document.getElementsByClassName('map--faded')[0];
-    address.readOnly = true;
-    if (!mapFaded) { // when the page is activated
-      address.value = window.util.getFormattedAddress(mainPin.style.left, MAIN_PIN_WIDTH / 2, mainPin.style.top, MAIN_PIN_HEIGHT);
-    } else {
-      address.value = window.util.getFormattedAddress(mainPin.style.left, PIN_INIT_WIDTH / 2, mainPin.style.top, PIN_INIT_HEIGHT / 2);
-    }
-    // reset filters:
-    var filterSelects = mapFilters.querySelectorAll('select');
-    for (var i = 0; i < filterSelects.length; i++) {
-      filterSelects[i].selectedIndex = 0;
-    }
-    // reset checkboxes of the filter:
-    window.form.resetCheckBoxes(mapFeatures);
-    window.map.closeCard();
-    window.map.removePins();
-
-    window.page.deactivatePage();
-  }
 })();

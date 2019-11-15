@@ -2,12 +2,10 @@
 
 (function () {
   var ESC_KEYCODE = 27;
-
   var MIN_BUNGALO_PRICE = 0;
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
-
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   // elements of the form:
@@ -38,10 +36,9 @@
     .content.querySelector('.success');
 
   var serverData;
-  var filteredData;
 
   window.form = {
-    filteredData: filteredData,
+    filteredData: null,
     checkGuestsRoomsCorrespondence: function () {
       var roomsNumber = Number(roomNumber.value);
       roomsNumber = roomsNumber === 100 ? 0 : roomsNumber;
