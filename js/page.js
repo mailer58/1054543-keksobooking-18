@@ -131,5 +131,7 @@
     window.form.resetCheckBoxes(mapFeatures);
     window.map.closeCard();
     window.map.removePins();
+
+    window.page.deactivatePage();
   }
 })();
