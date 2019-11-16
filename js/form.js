@@ -6,6 +6,8 @@
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
+  var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
+  var POST_METHOD = 'POST';
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   // elements of the form:
@@ -35,6 +37,13 @@
   var successTemplate = document.querySelector('#success')
     .content.querySelector('.success');
 
+  var TypeHousing = {
+    BUNGALO: 'bungalo',
+    FLAT: 'flat',
+    HOUSE: 'house',
+    PALACE: 'palace',
+  };
+
   var serverData;
 
   window.form = {
@@ -42,20 +51,9 @@
     checkGuestsRoomsCorrespondence: function () {
       var roomsNumber = Number(roomNumber.value);
       roomsNumber = roomsNumber === 100 ? 0 : roomsNumber;
-      var guestsNumber = Number(guestNumber.value);
       for (var i = 0; i < roomNumber.length; i++) {
-        if (roomsNumber !== Number(guestNumber[i].value)) {
-          guestNumber[i].disabled = true;
-        } else {
-          guestNumber[i].disabled = false;
-        }
-      }
-      if (roomsNumber !== guestsNumber) {
-        roomNumber.setCustomValidity('Число гостей и комнат должно совпадать');
-        guestNumber.setCustomValidity('Число гостей и комнат должно совпадать');
-      } else {
-        roomNumber.setCustomValidity('');
-        guestNumber.setCustomValidity('');
+        guestNumber[i].disabled = roomsNumber !== Number(guestNumber[i].value);
+        guestNumber[i].selected = roomsNumber === Number(guestNumber[i].value);
       }
     },
     resetCheckBoxes: function (checkBoxes) {
@@ -72,14 +70,12 @@
         setMinPrice(houseType.value);
       } else if (evt.target.matches('#room_number') || evt.target.matches('#capacity')) {
         window.form.checkGuestsRoomsCorrespondence();
-      } else {
-        return;
       }
     },
     // send data to server:
     onSendButtonClick: function (evt) {
       evt.preventDefault();
-      window.backend.save(adForm, onUpload, window.form.onUploadError);
+      window.backend.load(UPLOAD_URL, POST_METHOD, onUpload, window.form.onUploadError, adForm);
     },
     filterServerData: function () {
       // clear the map:
@@ -110,16 +106,16 @@
 
   function setMinPrice(house) {
     switch (house) {
-      case 'bungalo':
+      case TypeHousing.BUNGALO:
         setPriceInput(MIN_BUNGALO_PRICE);
         break;
-      case 'flat':
+      case TypeHousing.FLAT:
         setPriceInput(MIN_FLAT_PRICE);
         break;
-      case 'house':
+      case TypeHousing.HOUSE:
         setPriceInput(MIN_HOUSE_PRICE);
         break;
-      case 'palace':
+      case TypeHousing.PALACE:
         setPriceInput(MIN_PALACE_PRICE);
         break;
     }

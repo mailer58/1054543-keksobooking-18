@@ -7,6 +7,11 @@
   var PIN_INIT_HEIGHT = 156;
   var PIN_INIT_TOP = '375px';
   var PIN_INIT_LEFT = '570px';
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 87;
+  var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  var GET_METHOD = 'GET';
+
 
   var adForm = document.querySelector('.ad-form');
   var adFormElements = document.querySelectorAll('.ad-form input, .ad-form select');
@@ -16,10 +21,6 @@
   var mainPin = document.querySelector('.map__pin');
   var mapFilters = document.querySelector('.map__filters');
   var mapFeatures = document.querySelectorAll('.map__checkbox');
-
-
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 87;
 
   // elements of the form:
   var roomNumber = adForm.querySelector('#room_number');
@@ -56,7 +57,7 @@
       submitButton.disabled = false;
       resetButton.disabled = false;
       // load data from server:
-      window.backend.load(window.form.onDownload, window.form.onDownloadError);
+      window.backend.load(DOWNLOAD_URL, GET_METHOD, window.form.onDownload, window.form.onDownloadError);
     },
     deactivatePage: function () {
       adForm.classList.add('ad-form--disabled');

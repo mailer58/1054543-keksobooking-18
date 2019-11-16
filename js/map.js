@@ -67,7 +67,8 @@
     newElement.querySelector('.popup__avatar').src = note.author.avatar;
     newElement.querySelector('.popup__title').textContent = note.offer.title;
     newElement.querySelector('.popup__text--address').textContent = note.offer.address;
-    newElement.querySelector('.popup__text--price').innerHTML = note.offer.price + '&#x20bd;';
+    newElement.querySelector('.popup__text--price').textContent = note.offer.price;
+    newElement.querySelector('.popup__text--price').insertAdjacentHTML('beforeEnd', '&#x20bd;');
     newElement.querySelector('.popup__type').textContent = note.offer.type;
     newElement.querySelector('.popup__text--capacity').textContent = note.offer.rooms + ' комнаты для ' + note.offer.guests + ' гостей';
     newElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + note.offer.checkin + ', выезд до ' + note.offer.checkout;
@@ -90,9 +91,8 @@
   }
 
   window.map = {
-    onCloseButtonClick: function (evt) {
-      evt.target.closest('.popup').removeEventListener('click', window.map.onCloseButtonClick);
-      evt.target.closest('.popup').remove();
+    onCloseButtonClick: function () {
+      window.map.closeCard();
     },
     appendPins: function (template, destination, arr) {
       if (arr.length > MAX_PINS_NUMBER) {

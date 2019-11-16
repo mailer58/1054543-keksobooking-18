@@ -1,53 +1,39 @@
 'use strict';
 
 (function () {
-  var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
-  var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
+  var SUCCESS_LOAD = 200;
+  var TIMEOUT = 10000;
 
   window.backend = {
-    // download data:
-    load: function load(onDownload, onDownloadError) {
+    load: function (url, method, onLoadSuccess, onLoadError, data) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
-          onDownload(xhr.response);
+        if (xhr.status === SUCCESS_LOAD) {
+          if (data) {
+            onLoadSuccess(data);
+          } else {
+            onLoadSuccess(xhr.response);
+          }
         } else {
-          onDownloadError();
+          onLoadError();
         }
       });
       xhr.addEventListener('error', function () {
-        onDownloadError();
+        onLoadError();
       });
       xhr.addEventListener('timeout', function () {
-        onDownloadError();
+        onLoadError();
       });
 
-      xhr.timeout = 10000;
+      xhr.timeout = TIMEOUT;
 
-      xhr.open('GET', DOWNLOAD_URL);
-      xhr.send();
-    }, // upload data:
-    save: function save(data, onUpload, onUploadError) {
-      var xhr = new XMLHttpRequest();
-      xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
-          onUpload(data);
-        } else {
-          onUploadError();
-        }
-      });
-      xhr.addEventListener('error', function () {
-        onUploadError();
-      });
-      xhr.addEventListener('timeout', function () {
-        onUploadError();
-      });
-
-      xhr.timeout = 10000;
-      xhr.open('POST', UPLOAD_URL);
-
-      xhr.send(new FormData(data));
-    }
+      xhr.open(method, url);
+      if (data) {
+        xhr.send(new FormData(data));
+      } else {
+        xhr.send();
+      }
+    },
   };
 })();

@@ -4,6 +4,10 @@
 
   var LOW_PRICE = 10000;
   var HIGH_PRICE = 50000;
+  var ANY = 'any';
+  var HIGH_PRICE_STRING = 'high';
+  var MIDDLE_PRICE_STRING = 'middle';
+  var LOW_PRICE_STRING = 'low';
 
   var typeFilter = document.querySelector('#housing-type');
 
@@ -35,7 +39,7 @@
   };
 
   function filterByType(currentItem, type) {
-    if (type === 'any') {
+    if (type === ANY) {
       return true;
     } else {
       if (currentItem.offer.type === typeFilter.value) {
@@ -48,27 +52,28 @@
 
   function filterByPrice(currentItem, string) {
     var textValue;
-    if (string === 'any') {
+    if (string === ANY) {
       return true;
     }
-    if (currentItem.offer.price < LOW_PRICE) {
-      textValue = 'low';
-    }
-    if (currentItem.offer.price > HIGH_PRICE) {
-      textValue = 'high';
-    }
-    if (currentItem.offer.price >= LOW_PRICE && currentItem.offer.price <= HIGH_PRICE) {
-      textValue = 'middle';
+    switch (true) {
+      case currentItem.offer.price < LOW_PRICE:
+        textValue = LOW_PRICE_STRING;
+        break;
+      case currentItem.offer.price > HIGH_PRICE:
+        textValue = HIGH_PRICE_STRING;
+        break;
+      case currentItem.offer.price >= LOW_PRICE && currentItem.offer.price <= HIGH_PRICE:
+        textValue = MIDDLE_PRICE_STRING;
     }
     return textValue === string;
   }
 
   var filterByRooms = function (currentItem, rooms) {
-    return rooms === 'any' || +rooms === currentItem.offer.rooms;
+    return rooms === ANY || +rooms === currentItem.offer.rooms;
   };
 
   var filterByGuests = function (currentItem, guests) {
-    return guests === 'any' || +guests === currentItem.offer.guests;
+    return guests === ANY || +guests === currentItem.offer.guests;
   };
 
   function filterByFeature(currentItem, isNecessary, feature) {
@@ -81,10 +86,10 @@
 
   // current state of filters:
   var currentFilter = {
-    type: 'any',
-    price: 'any',
-    rooms: 'any',
-    guests: 'any',
+    type: ANY,
+    price: ANY,
+    rooms: ANY,
+    guests: ANY,
     wifi: false,
     dishwasher: false,
     parking: false,
