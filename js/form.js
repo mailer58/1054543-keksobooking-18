@@ -77,7 +77,7 @@
           currentGuestsNumber <= maxGuestsNumber && currentGuestsNumber > 0 ? false : true;
         }
       }
-      if (guestsNumber > maxGuestsNumber) {
+      if (guestsNumber > maxGuestsNumber || (guestsNumber === 0 && roomsNumber < 100)) {
         guestNumber.setCustomValidity('Недопустимое количество гостей');
       } else {
         guestNumber.setCustomValidity('');
