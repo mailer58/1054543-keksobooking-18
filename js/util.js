@@ -4,13 +4,6 @@
   var DEBOUNCE_INTERVAL = 500;
 
   window.util = {
-    getMaxOfArray: function (numArray) {
-      var maxValue = 0;
-      for (var i = 0; i < numArray.length; i++) {
-        maxValue = maxValue < numArray[i] ? numArray[i] : maxValue;
-      }
-      return maxValue;
-    },
     getFormattedAddress: function (left, width, top, height) {
       var leftPosition = Math.floor(parseInt(left, 10) + width);
       var topPosition = Math.floor(parseInt(top, 10) + height);

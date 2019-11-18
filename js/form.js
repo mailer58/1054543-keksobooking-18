@@ -55,29 +55,12 @@
     filteredData: null,
     checkGuestsRoomsCorrespondence: function () {
       var roomsNumber = Number(roomNumber.value);
-      var guestsNumber = Number(guestNumber.value);
-      // get array of allowed numbers of guests:
-      var allowedNumbersOfGuests = [];
-      for (var key in roomsGuestsMap) {
-        if (roomsNumber === Number(key)) {
-          for (var i = 0; i < roomsGuestsMap[key].length; i++) {
-            allowedNumbersOfGuests.push(roomsGuestsMap[key][i]);
-          }
-        }
-      }
-      // find max number of guests in the array:
-      var maxGuestsNumber = window.util.getMaxOfArray(allowedNumbersOfGuests);
       // disable unnecessary options in the guests select:
       for (var j = 0; j < guestNumber.length; j++) {
-        var currentGuestsNumber = Number(guestNumber[j].value);
-        if (maxGuestsNumber === 0) {
-          guestNumber[j].disabled = currentGuestsNumber === 0 ? false : true;
-        } else {
-          guestNumber[j].disabled =
-          currentGuestsNumber <= maxGuestsNumber && currentGuestsNumber > 0 ? false : true;
-        }
+        guestNumber[j].disabled =
+          roomsGuestsMap[roomsNumber].includes(Number(guestNumber[j].value)) === true ? false : true;
       }
-      if (guestsNumber > maxGuestsNumber || (guestsNumber === 0 && roomsNumber < 100)) {
+      if (!roomsGuestsMap[roomsNumber].includes(Number(guestNumber.value))) {
         guestNumber.setCustomValidity('Недопустимое количество гостей');
       } else {
         guestNumber.setCustomValidity('');
