@@ -57,8 +57,7 @@
       var roomsNumber = Number(roomNumber.value);
       // disable unnecessary options in the guests select:
       for (var j = 0; j < guestNumber.length; j++) {
-        guestNumber[j].disabled =
-          roomsGuestsMap[roomsNumber].includes(Number(guestNumber[j].value)) === true ? false : true;
+        guestNumber[j].disabled = !roomsGuestsMap[roomsNumber].includes(Number(guestNumber[j].value));
       }
       if (!roomsGuestsMap[roomsNumber].includes(Number(guestNumber.value))) {
         guestNumber.setCustomValidity('Недопустимое количество гостей');
