@@ -9,9 +9,9 @@
   var typeFilter = document.querySelector('#housing-type');
 
   var PriceCategory = {
-    HIGH_PRICE: 'high',
-    MIDDLE_PRICE: 'middle',
-    LOW_PRICE: 'low',
+    HIGH: 'high',
+    MIDDLE: 'middle',
+    LOW: 'low',
   };
   // filter data:
   window.filters = {
@@ -59,13 +59,13 @@
     }
     switch (true) {
       case currentItem.offer.price < LOW_PRICE:
-        textValue = PriceCategory.LOW_PRICE;
+        textValue = PriceCategory.LOW;
         break;
       case currentItem.offer.price > HIGH_PRICE:
-        textValue = PriceCategory.HIGH_PRICE;
+        textValue = PriceCategory.HIGH;
         break;
       case currentItem.offer.price >= LOW_PRICE && currentItem.offer.price <= HIGH_PRICE:
-        textValue = PriceCategory.MIDDLE_PRICE;
+        textValue = PriceCategory.MIDDLE;
     }
     return textValue === string;
   }
