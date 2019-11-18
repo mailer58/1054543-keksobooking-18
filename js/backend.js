@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var SUCCESS_LOAD = 200;
+  var SUCCESS_LOAD_STATUS = 200;
   var TIMEOUT = 10000;
 
   window.backend = {
@@ -9,12 +9,8 @@
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
       xhr.addEventListener('load', function () {
-        if (xhr.status === SUCCESS_LOAD) {
-          if (data) {
-            onLoadSuccess(data);
-          } else {
-            onLoadSuccess(xhr.response);
-          }
+        if (xhr.status === SUCCESS_LOAD_STATUS) {
+          onLoadSuccess(xhr.response);
         } else {
           onLoadError();
         }
@@ -30,7 +26,7 @@
 
       xhr.open(method, url);
       if (data) {
-        xhr.send(new FormData(data));
+        xhr.send(data);
       } else {
         xhr.send();
       }

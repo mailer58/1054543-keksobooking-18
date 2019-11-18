@@ -37,23 +37,50 @@
   var successTemplate = document.querySelector('#success')
     .content.querySelector('.success');
 
-  var TypeHousing = {
+  var serverData;
+
+  var HousingType = {
     BUNGALO: 'bungalo',
     FLAT: 'flat',
     HOUSE: 'house',
     PALACE: 'palace',
   };
-
-  var serverData;
-
+  var roomsGuestsMap = {
+    1: [1],
+    2: [1, 2],
+    3: [1, 2, 3],
+    100: [0],
+  };
   window.form = {
     filteredData: null,
     checkGuestsRoomsCorrespondence: function () {
       var roomsNumber = Number(roomNumber.value);
-      roomsNumber = roomsNumber === 100 ? 0 : roomsNumber;
-      for (var i = 0; i < roomNumber.length; i++) {
-        guestNumber[i].disabled = roomsNumber !== Number(guestNumber[i].value);
-        guestNumber[i].selected = roomsNumber === Number(guestNumber[i].value);
+      var guestsNumber = Number(guestNumber.value);
+      // get array of allowed numbers of guests:
+      var allowedNumbersOfGuests = [];
+      for (var key in roomsGuestsMap) {
+        if (roomsNumber === Number(key)) {
+          for (var i = 0; i < roomsGuestsMap[key].length; i++) {
+            allowedNumbersOfGuests.push(roomsGuestsMap[key][i]);
+          }
+        }
+      }
+      // find max number of guests in the array:
+      var maxGuestsNumber = window.util.getMaxOfArray(allowedNumbersOfGuests);
+      // disable unnecessary options in the guests select:
+      for (var j = 0; j < guestNumber.length; j++) {
+        var currentGuestsNumber = Number(guestNumber[j].value);
+        if (maxGuestsNumber === 0) {
+          guestNumber[j].disabled = currentGuestsNumber === 0 ? false : true;
+        } else {
+          guestNumber[j].disabled =
+          currentGuestsNumber <= maxGuestsNumber && currentGuestsNumber > 0 ? false : true;
+        }
+      }
+      if (guestsNumber > maxGuestsNumber) {
+        guestNumber.setCustomValidity('Недопустимое количество гостей');
+      } else {
+        guestNumber.setCustomValidity('');
       }
     },
     resetCheckBoxes: function (checkBoxes) {
@@ -75,7 +102,7 @@
     // send data to server:
     onSendButtonClick: function (evt) {
       evt.preventDefault();
-      window.backend.load(UPLOAD_URL, POST_METHOD, onUpload, window.form.onUploadError, adForm);
+      window.backend.load(UPLOAD_URL, POST_METHOD, onUpload, window.form.onUploadError, new FormData(adForm));
     },
     filterServerData: function () {
       // clear the map:
@@ -106,16 +133,16 @@
 
   function setMinPrice(house) {
     switch (house) {
-      case TypeHousing.BUNGALO:
+      case HousingType.BUNGALO:
         setPriceInput(MIN_BUNGALO_PRICE);
         break;
-      case TypeHousing.FLAT:
+      case HousingType.FLAT:
         setPriceInput(MIN_FLAT_PRICE);
         break;
-      case TypeHousing.HOUSE:
+      case HousingType.HOUSE:
         setPriceInput(MIN_HOUSE_PRICE);
         break;
-      case TypeHousing.PALACE:
+      case HousingType.PALACE:
         setPriceInput(MIN_PALACE_PRICE);
         break;
     }
@@ -146,7 +173,7 @@
       errorText.classList.add(errorType);
       // change text of an error:
       if (newErrorText) {
-        errorText.innerHTML = newErrorText;
+        errorText.textContent = newErrorText;
       }
       var errorDiv = document.getElementsByClassName('error')[0];
       errorDiv.addEventListener('click', errorMessageHandler);
@@ -198,7 +225,6 @@
       }
     };
   }
-  window.form.checkGuestsRoomsCorrespondence();
 
   document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {

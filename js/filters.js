@@ -5,12 +5,14 @@
   var LOW_PRICE = 10000;
   var HIGH_PRICE = 50000;
   var ANY = 'any';
-  var HIGH_PRICE_STRING = 'high';
-  var MIDDLE_PRICE_STRING = 'middle';
-  var LOW_PRICE_STRING = 'low';
 
   var typeFilter = document.querySelector('#housing-type');
 
+  var PriceType = {
+    HIGH_PRICE_STRING: 'high',
+    MIDDLE_PRICE_STRING: 'middle',
+    LOW_PRICE_STRING: 'low',
+  };
   // filter data:
   window.filters = {
     onFiltersChange: function (evt) {
@@ -57,13 +59,13 @@
     }
     switch (true) {
       case currentItem.offer.price < LOW_PRICE:
-        textValue = LOW_PRICE_STRING;
+        textValue = PriceType.LOW_PRICE_STRING;
         break;
       case currentItem.offer.price > HIGH_PRICE:
-        textValue = HIGH_PRICE_STRING;
+        textValue = PriceType.HIGH_PRICE_STRING;
         break;
       case currentItem.offer.price >= LOW_PRICE && currentItem.offer.price <= HIGH_PRICE:
-        textValue = MIDDLE_PRICE_STRING;
+        textValue = PriceType.MIDDLE_PRICE_STRING;
     }
     return textValue === string;
   }

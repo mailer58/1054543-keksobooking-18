@@ -11,8 +11,6 @@
   var MAIN_PIN_HEIGHT = 87;
   var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
   var GET_METHOD = 'GET';
-
-
   var adForm = document.querySelector('.ad-form');
   var adFormElements = document.querySelectorAll('.ad-form input, .ad-form select');
   var mapFiltersElements = document.querySelectorAll('.map__filters input, .map__filters select');
@@ -21,7 +19,6 @@
   var mainPin = document.querySelector('.map__pin');
   var mapFilters = document.querySelector('.map__filters');
   var mapFeatures = document.querySelectorAll('.map__checkbox');
-
   // elements of the form:
   var roomNumber = adForm.querySelector('#room_number');
   var guestNumber = adForm.querySelector('#capacity');

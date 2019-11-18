@@ -3,12 +3,11 @@
 (function () {
 
   var ENTER_KEYCODE = 13;
-
+  var RUBLE = '\u20BD';
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 87;
-
   var MAP_WIDTH = 1200;
   var MAP_LEFT_X = 0;
   var MAP_TOP_MIN = 130;
@@ -67,8 +66,7 @@
     newElement.querySelector('.popup__avatar').src = note.author.avatar;
     newElement.querySelector('.popup__title').textContent = note.offer.title;
     newElement.querySelector('.popup__text--address').textContent = note.offer.address;
-    newElement.querySelector('.popup__text--price').textContent = note.offer.price;
-    newElement.querySelector('.popup__text--price').insertAdjacentHTML('beforeEnd', '&#x20bd;');
+    newElement.querySelector('.popup__text--price').textContent = note.offer.price + RUBLE;
     newElement.querySelector('.popup__type').textContent = note.offer.type;
     newElement.querySelector('.popup__text--capacity').textContent = note.offer.rooms + ' комнаты для ' + note.offer.guests + ' гостей';
     newElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + note.offer.checkin + ', выезд до ' + note.offer.checkout;
